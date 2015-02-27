@@ -1,0 +1,9 @@
+@import "addons.scss";
+@import "pi4jweb.scss";
+
+/* This file prefixes all rules with the theme name to avoid causing conflicts with other themes. */
+/* The actual styles should be defined in pi4jweb.scss */
+.pi4jweb {
+  @include addons;
+  @include pi4jweb;
+}
