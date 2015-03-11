@@ -3,10 +3,10 @@ package com.kamilu.pi4jweb;
 import java.io.IOException;
 import java.io.Serializable;
 
+import com.alsnightsoft.vaadin.widgets.canvasplus.CanvasPlus;
 import com.pi4j.io.i2c.I2CBus;
 import com.pi4j.io.i2c.I2CDevice;
 import com.pi4j.io.i2c.I2CFactory;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.UI;
 
 public class MPU6050Device implements Serializable {
@@ -21,10 +21,10 @@ public class MPU6050Device implements Serializable {
 	double cfAngleX;
 	double cfAngleY;
 	long startTime;
-	private Label label;
+	private CanvasPlus canvas;
 
-	public MPU6050Device(Label label) {
-		this.label = label;
+	public MPU6050Device(CanvasPlus canvas) {
+		this.canvas = canvas;
 
 	}
 
@@ -47,7 +47,7 @@ public class MPU6050Device implements Serializable {
 		public void run() {
 			while (true) {
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(300);
 					UI.getCurrent().access(new Runnable() {
 						@Override
 						public void run() {
@@ -100,10 +100,30 @@ public class MPU6050Device implements Serializable {
 								double rotY = -Math.toDegrees(Math.atan2(aYsc, Math.sqrt((aXsc * aXsc) + (aZsc * aZsc))));
 								cfAngleX = alfa * (cfAngleX + rate_gyr_x * DT) + (1 - alfa) * rotX;
 								cfAngleY = alfa * (cfAngleY + rate_gyr_x * DT) + (1 - alfa) * rotY;
-								label.setValue("CFangleX: " + cfAngleX + ", CFangleY: " + cfAngleY);
+
+								drawXYAxis(cfAngleX, cfAngleY);
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
+						}
+
+						private void drawXYAxis(double cfAngleX, double cfAngleY) {
+
+							double rX = Math.toRadians(cfAngleX);
+							double rY = Math.toRadians(cfAngleY);
+							canvas.saveContext();
+							canvas.clear();
+							canvas.setStrokeStyle("#f00");
+							int x1 = 100, x2 = 200, x3 = 400, x4 = 500;
+							int b = 100;
+							canvas.moveTo(x1, rX * x1 + b);
+							canvas.lineTo(x2, -rX * x2 + b);
+							canvas.setStrokeStyle("#00f");
+							canvas.moveTo(x3, rY * x3 + b);
+							canvas.lineTo(x4, -rY * x4 + b);
+							canvas.stroke();
+							canvas.restoreContext();
+
 						}
 					});
 				} catch (InterruptedException e) {
@@ -122,7 +142,8 @@ public class MPU6050Device implements Serializable {
 					UI.getCurrent().access(new Runnable() {
 						@Override
 						public void run() {
-							label.setValue("Mock CFangleX: " + Math.random() + ", Mock CFangleY: " + Math.random());
+							// label.setValue("Mock CFangleX: " + Math.random()
+							// + ", Mock CFangleY: " + Math.random());
 						}
 					});
 				}
@@ -135,7 +156,7 @@ public class MPU6050Device implements Serializable {
 	public void stopI2cBus() {
 		try {
 			bus.close();
-			label.setValue("Device stopped");
+			// label.setValue("Device stopped");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

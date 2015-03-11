@@ -10,8 +10,8 @@
 		<!-- The default configuration, which should be deployed to the server -->
 		<conf name="default" />
 		<!-- A configuration only needed when compiling the widget set. Should 
-			not be deployed to the server -->
-		<conf name="widgetset-compile" />
+			not be deployed to the server-->
+		<conf name="widgetset-compile" /> 
 		<!-- A configuration used in compilation of server side classes only.
 			Should be deployed to the server -->
 		<conf name="nodeploy" />
@@ -37,10 +37,10 @@
 		<dependency org="com.vaadin" name="vaadin-client" rev="&vaadin.version;"
 			 conf="widgetset-compile->default" />
 
-		<!-- Compiler for custom widget sets. Should not be deployed
-		<dependency org="com.vaadin" name="vaadin-client-compiler"
-			rev="&vaadin.version;" conf="widgetset-compile->default" /> -->
-		
+		<!-- Compiler for custom widget sets. Should not be deployed-->
+		<dependency org="com.vaadin" name="vaadin-client-compiler" 
+			rev="&vaadin.version;" conf="widgetset-compile->default" />
+
 		<dependency org="org.vaadin.addons" name="canvas-plus" rev="1.3.3" />
 	</dependencies>
 </ivy-module>
