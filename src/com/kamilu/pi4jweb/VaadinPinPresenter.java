@@ -34,8 +34,12 @@ public class VaadinPinPresenter extends Panel {
 		pinName = new TextField("Pin Name");
 		switchOnOffState = new ToggleButton(false, "", new OnOffPinListener());
 		switchLHState = new ToggleButton(false, "State ", new LowHighPinListener());
-		deleteBtn = new Button("", (Button.ClickListener) event -> {
-			removeFromParent(this);
+		deleteBtn = new Button("", new Button.ClickListener() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public void buttonClick(ClickEvent event) {
+				VaadinPinPresenter.removeFromParent(VaadinPinPresenter.this);
+			}
 		});
 		horiz.addComponents(pinCombo, switchOnOffState, deleteBtn);
 		rootLayout.addComponents(pinName, horiz, switchLHState);

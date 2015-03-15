@@ -8,6 +8,7 @@ import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.RaspiPin;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
 
 @SuppressWarnings("serial")
 public class VaadinMotorPresenter extends Panel {
@@ -49,13 +50,22 @@ public class VaadinMotorPresenter extends Panel {
 		sequence.select("Single step sequence");
 		sequence.setNullSelectionAllowed(false);
 		stepsPerRevolution = new TextField("stepPerRevolution", "2038");
-		createBtn = new Button("Create", (Button.ClickListener) event -> {
-			createMotor();
-			setActionMode();
+		// createBtn = new Button("Create", (Button.ClickListener) event -> {
+		//
+		// });
+		createBtn = new Button("Create", new Button.ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				createMotor();
+				setActionMode();
+			}
 		});
 		createBtn.setIcon(FontAwesome.PLUS);
-		deleteBtn = new Button("", (Button.ClickListener) event -> {
-			removeFromParent(this);
+		deleteBtn = new Button("", new Button.ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				VaadinMotorPresenter.removeFromParent(VaadinMotorPresenter.this);
+			}
 		});
 		deleteBtn.setIcon(FontAwesome.TRASH_O);
 		configHoriz.addComponents(motorName, createBtn, deleteBtn);
@@ -69,36 +79,50 @@ public class VaadinMotorPresenter extends Panel {
 		loadHoriz = new HorizontalLayout();
 		actionHoriz = new HorizontalLayout();
 		actionHoriz.setVisible(false);
-		Button configBtn = new Button("", (Button.ClickListener) event -> {
-			setConfigMode();
+		final Button configBtn = new Button("", new Button.ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				setConfigMode();
+			}
 		});
 		configBtn.setIcon(FontAwesome.COGS);
-		ToggleButton switchLoad = new ToggleButton(false, "", event -> {
-			ToggleButton button = (ToggleButton) event.getButton();
-			button.toggle();
-			setMotorState(button.getValue());
-			actionHoriz.setVisible(button.getValue());
-			configBtn.setVisible(!button.getValue());
+		ToggleButton switchLoad = new ToggleButton(false, "", new Button.ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				ToggleButton button = (ToggleButton) event.getButton();
+				button.toggle();
+				setMotorState(button.getValue());
+				actionHoriz.setVisible(button.getValue());
+				configBtn.setVisible(!button.getValue());
+			}
 		});
-		Button forwardBtn = new Button("", (Button.ClickListener) event -> {
-			gpioMotor.forward();
-			setCaption(motorName.getValue() + "  Forward");
+		Button forwardBtn = new Button("", new Button.ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				gpioMotor.forward();
+				setCaption(motorName.getValue() + "  Forward");
+			}
 		});
 		forwardBtn.setIcon(FontAwesome.ARROW_UP);
-		Button reverseBtn = new Button("", (Button.ClickListener) event -> {
-			gpioMotor.reverse();
-			setCaption(motorName.getValue() + "  Reverse");
+		Button reverseBtn = new Button("", new Button.ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				gpioMotor.reverse();
+				setCaption(motorName.getValue() + "  Reverse");
+			}
 		});
 		reverseBtn.setIcon(FontAwesome.ARROW_DOWN);
-		Button stopBtn = new Button("", (Button.ClickListener) event -> {
-			gpioMotor.stop();
-			setCaption(motorName.getValue() + "  Stopped");
+		Button stopBtn = new Button("", new Button.ClickListener() {
+			@Override
+			public void buttonClick(ClickEvent event) {
+				gpioMotor.stop();
+				setCaption(motorName.getValue() + "  Stopped");
+			}
 		});
 		stopBtn.setIcon(FontAwesome.STOP);
 		loadHoriz.addComponents(switchLoad, configBtn);
 		actionHoriz.addComponents(forwardBtn, reverseBtn, stopBtn);
 	}
-
 	private void setConfigMode() {
 		rootLayout.removeAllComponents();
 		rootLayout.addComponents(configHoriz, select, interval, sequence, stepsPerRevolution);
@@ -113,8 +137,7 @@ public class VaadinMotorPresenter extends Panel {
 
 	@SuppressWarnings("unchecked")
 	private void createMotor() {
-		gpioMotor = new VaadinMotor(gpioController, (Collection<Pin>) select.getValue(), 
-				Long.parseLong(interval.getValue()), true,
+		gpioMotor = new VaadinMotor(gpioController, (Collection<Pin>) select.getValue(), Long.parseLong(interval.getValue()), true,
 				Integer.parseInt(stepsPerRevolution.getValue()));
 	}
 

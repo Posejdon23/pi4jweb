@@ -31,8 +31,8 @@ public class Pi4jwebUI extends UI {
 
 	@Override
 	protected void init(VaadinRequest request) {
-		VaadinGPIOController controller = new VaadinGPIOController();
-		VaadinCameraController camera = new VaadinCameraController();
+		final VaadinGPIOController controller = new VaadinGPIOController();
+		final VaadinCameraController camera = new VaadinCameraController();
 
 		Label header = new Label("Log to your Pi");
 		TextField username = new TextField("Username", "pi");
