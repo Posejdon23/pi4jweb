@@ -5,35 +5,28 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 
 import javax.imageio.ImageIO;
 
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 
 import com.vaadin.server.StreamResource.StreamSource;
 
-public class CameraSource implements StreamSource, Serializable {
-	private static final long serialVersionUID = 1L;
-	private ByteArrayOutputStream imagebuffer = null;
+public class CameraSource implements StreamSource {
 
-	static {
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-	}
+	private static final long serialVersionUID = 1L;
 
 	public InputStream getStream() {
-		Mat mat = new Mat();
+		Mat matrix = new Mat(480, 640, 16);
 		VideoCapture videoCapture = new VideoCapture(0);
-		videoCapture.retrieve(mat);
-		videoCapture.release();
-		imagebuffer = new ByteArrayOutputStream();
+		videoCapture.retrieve(matrix);
+		ByteArrayOutputStream imagebuffer = new ByteArrayOutputStream();
 		try {
-			ImageIO.write(matToBufferedImage(mat), "png", imagebuffer);
+			ImageIO.write(matToBufferedImage(matrix), "png", imagebuffer);
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
+		videoCapture.release();
 		return new ByteArrayInputStream(imagebuffer.toByteArray());
 	}
 

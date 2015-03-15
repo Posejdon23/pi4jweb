@@ -41,10 +41,12 @@ public class VaadinMPU6050Presenter extends CustomComponent {
 				if (!power.getValue()) {
 					label.setVisible(true);
 					canvas.setVisible(true);
+					canvas.setLineWidth(8.0);
 					device.startReading();
 				} else {
 					label.setVisible(false);
 					canvas.setVisible(false);
+					device.setReading(false);
 					device.stopI2cBus();
 				}
 				power.toggle();
@@ -60,14 +62,26 @@ public class VaadinMPU6050Presenter extends CustomComponent {
 			}
 
 			private void drawLine() {
-				double radians = Math.toRadians(Double.valueOf(xAngle.getValue()));
+				int valueOf;
+				try {
+					valueOf = Integer.valueOf(xAngle.getValue());
+				} catch (NumberFormatException e) {
+					return;
+				}
+				double[] xCoord = MathFunctions.getCoord(valueOf, 150, 150, 150);
+				double[] yCoord = MathFunctions.getCoord(valueOf, 150, 450, 150);
 				canvas.clear();
-				canvas.stroke();
+				canvas.saveContext();
+				canvas.restoreContext();
+				canvas.beginPath();
 				canvas.setStrokeStyle("#f00");
-				int x1 = 200, x2 = 400;
-				int b = 150;
-				canvas.moveTo(x1, x1 * radians + b);
-				canvas.lineTo(x2, -x1 * radians + b);
+				canvas.moveTo(xCoord[0], xCoord[1]);
+				canvas.lineTo(xCoord[2], xCoord[3]);
+				canvas.stroke();
+				canvas.beginPath();
+				canvas.setStrokeStyle("#00f");
+				canvas.moveTo(yCoord[0], yCoord[1]);
+				canvas.lineTo(yCoord[2], yCoord[3]);
 				canvas.stroke();
 			}
 		});

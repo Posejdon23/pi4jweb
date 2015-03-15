@@ -2,6 +2,8 @@ package com.kamilu.pi4jweb;
 
 import javax.servlet.annotation.WebServlet;
 
+import org.opencv.core.Core;
+
 import com.vaadin.annotations.Push;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -26,14 +28,16 @@ public class Pi4jwebUI extends UI {
 	@VaadinServletConfiguration(widgetset = "com.kamilu.pi4jweb.widgetset.Pi4jwebWidgetset", productionMode = false, ui = Pi4jwebUI.class)
 	public static class Servlet extends VaadinServlet {
 	}
+	
+	static {
+		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+	}
 
 	private VerticalLayout main;
 
 	@Override
 	protected void init(VaadinRequest request) {
-		final VaadinGPIOController controller = new VaadinGPIOController();
-		final VaadinCameraController camera = new VaadinCameraController();
-
+		final PiController controller = new PiController();
 		Label header = new Label("Log to your Pi");
 		TextField username = new TextField("Username", "pi");
 		PasswordField password = new PasswordField("Password");
@@ -43,7 +47,6 @@ public class Pi4jwebUI extends UI {
 			public void buttonClick(ClickEvent event) {
 				main.removeAllComponents();
 				main.addComponent(controller);
-				main.addComponent(camera);
 			}
 		});
 		HorizontalLayout headerHoriz = new HorizontalLayout(header);

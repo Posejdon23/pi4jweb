@@ -2,6 +2,7 @@ package com.kamilu.pi4jweb;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Random;
 
 import com.alsnightsoft.vaadin.widgets.canvasplus.CanvasPlus;
 import com.pi4j.io.i2c.I2CBus;
@@ -21,11 +22,12 @@ public class MPU6050Device implements Serializable {
 	double cfAngleX;
 	double cfAngleY;
 	long startTime;
+	private boolean reading = true;
+	int xx = 0, yy = 0;
 	private CanvasPlus canvas;
 
 	public MPU6050Device(CanvasPlus canvas) {
 		this.canvas = canvas;
-
 	}
 
 	public void startReading() {
@@ -37,15 +39,15 @@ public class MPU6050Device implements Serializable {
 			device.write(0x1B, (byte) 0b11100000);
 			device.write(0x1C, (byte) 0b00011001);
 			new SensorsThread().start();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (UnsatisfiedLinkError | Exception e) {
+			new MockSensorsThread().start();
 		}
 	}
 
 	class SensorsThread extends Thread {
 		@Override
 		public void run() {
-			while (true) {
+			while (reading) {
 				try {
 					Thread.sleep(300);
 					UI.getCurrent().access(new Runnable() {
@@ -100,7 +102,6 @@ public class MPU6050Device implements Serializable {
 								double rotY = -Math.toDegrees(Math.atan2(aYsc, Math.sqrt((aXsc * aXsc) + (aZsc * aZsc))));
 								cfAngleX = alfa * (cfAngleX + rate_gyr_x * DT) + (1 - alfa) * rotX;
 								cfAngleY = alfa * (cfAngleY + rate_gyr_x * DT) + (1 - alfa) * rotY;
-
 								drawXYAxis(cfAngleX, cfAngleY);
 							} catch (IOException e) {
 								e.printStackTrace();
@@ -109,20 +110,21 @@ public class MPU6050Device implements Serializable {
 
 						private void drawXYAxis(double cfAngleX, double cfAngleY) {
 
-							double rX = Math.toRadians(cfAngleX);
-							double rY = Math.toRadians(cfAngleY);
-							canvas.saveContext();
+							double[] xCoord = MathFunctions.getCoord(cfAngleX, 150, 150, 150);
+							double[] yCoord = MathFunctions.getCoord(cfAngleY, 150, 450, 150);
 							canvas.clear();
-							canvas.setStrokeStyle("#f00");
-							int x1 = 100, x2 = 200, x3 = 400, x4 = 500;
-							int b = 100;
-							canvas.moveTo(x1, rX * x1 + b);
-							canvas.lineTo(x2, -rX * x2 + b);
-							canvas.setStrokeStyle("#00f");
-							canvas.moveTo(x3, rY * x3 + b);
-							canvas.lineTo(x4, -rY * x4 + b);
-							canvas.stroke();
+							canvas.saveContext();
 							canvas.restoreContext();
+							canvas.beginPath();
+							canvas.setStrokeStyle("#f00");
+							canvas.moveTo(xCoord[0], xCoord[1]);
+							canvas.lineTo(xCoord[2], xCoord[3]);
+							canvas.stroke();
+							canvas.beginPath();
+							canvas.setStrokeStyle("#00f");
+							canvas.moveTo(yCoord[0], yCoord[1]);
+							canvas.lineTo(yCoord[2], yCoord[3]);
+							canvas.stroke();
 
 						}
 					});
@@ -137,13 +139,32 @@ public class MPU6050Device implements Serializable {
 		@Override
 		public void run() {
 			try {
-				while (true) {
-					Thread.sleep(2000);
+				while (reading) {
+					Thread.sleep(500);
 					UI.getCurrent().access(new Runnable() {
 						@Override
 						public void run() {
-							// label.setValue("Mock CFangleX: " + Math.random()
-							// + ", Mock CFangleY: " + Math.random());
+							Random ranX = new Random();
+							Random ranY = new Random();
+							int x = ranX.nextInt(10) - 5;
+							int y = ranY.nextInt(10) - 5;
+							xx += x;
+							yy += y;
+							double[] xCoord = MathFunctions.getCoord((int) xx, 150, 150, 150);
+							double[] yCoord = MathFunctions.getCoord((int) yy, 150, 450, 150);
+							canvas.clear();
+							canvas.saveContext();
+							canvas.restoreContext();
+							canvas.beginPath();
+							canvas.setStrokeStyle("#f00");
+							canvas.moveTo(xCoord[0], xCoord[1]);
+							canvas.lineTo(xCoord[2], xCoord[3]);
+							canvas.stroke();
+							canvas.beginPath();
+							canvas.setStrokeStyle("#00f");
+							canvas.moveTo(yCoord[0], yCoord[1]);
+							canvas.lineTo(yCoord[2], yCoord[3]);
+							canvas.stroke();
 						}
 					});
 				}
@@ -155,10 +176,17 @@ public class MPU6050Device implements Serializable {
 
 	public void stopI2cBus() {
 		try {
-			bus.close();
-			// label.setValue("Device stopped");
+			if (bus != null) {
+				bus.close();
+			}
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
+	}
+	public boolean isReading() {
+		return reading;
+	}
+
+	public void setReading(boolean reading) {
+		this.reading = reading;
 	}
 }
