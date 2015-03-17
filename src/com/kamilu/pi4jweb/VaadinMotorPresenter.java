@@ -25,10 +25,12 @@ public class VaadinMotorPresenter extends Panel {
 	private Button createBtn;
 	private Button deleteBtn;
 	private final GpioController gpioController;
+	private final JoyStickController joystick;
 
 	public VaadinMotorPresenter(GpioController gpioController) {
 		this.gpioController = gpioController;
 		rootLayout = new VerticalLayout();
+		joystick = new JoyStickController();
 		rootLayout.setSizeFull();
 		buildConfigMode();
 		buildActionMode();
@@ -131,7 +133,7 @@ public class VaadinMotorPresenter extends Panel {
 
 	private void setActionMode() {
 		rootLayout.removeAllComponents();
-		rootLayout.addComponents(loadHoriz, actionHoriz);
+		rootLayout.addComponents(loadHoriz, actionHoriz, joystick);
 		setCaption(motorName.getValue());
 	}
 

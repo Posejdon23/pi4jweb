@@ -16,17 +16,19 @@ public class VaadinCameraController extends CustomComponent {
 	private VerticalLayout layout;
 	private Image image;
 	private Button capture;
+	private CameraSource cameraStreamSource;
+	private StreamResource source;
 
 	public VaadinCameraController() {
 		image = new Image();
 		image.setImmediate(true);
+		cameraStreamSource = new CameraSource();
+		source = new StreamResource(cameraStreamSource, "png");
+		source.setCacheTime(0);
 		capture = new Button("Capture Image", new Button.ClickListener() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void buttonClick(ClickEvent event) {
-				CameraSource cameraStreamSource = new CameraSource();
-				StreamResource source = new StreamResource(cameraStreamSource, "png");
-				source.setCacheTime(0);
 				image.setSource(source);
 				image.markAsDirty();
 				source.setFilename("camera-" + //

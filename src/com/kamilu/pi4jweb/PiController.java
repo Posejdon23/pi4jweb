@@ -42,16 +42,16 @@ public class PiController extends CustomComponent {
 		load = new ToggleButton(false, "GPIO Controller ");
 		addGpio = new Button("Add Pin");
 		addDevice = new Button("Add Device");
-		showGyro = new ToggleButton(false, "Show MPU-6050");
-		showCamera = new ToggleButton(false, "Show Camera");
+		showGyro = new ToggleButton(false, "MPU-6050 ");
+		showCamera = new ToggleButton(false, "Camera ");
 		addGpio.setVisible(false);
 		addDevice.setVisible(false);
 		showGyro.setVisible(false);
 		showCamera.setVisible(false);
 		addGpio.setIcon(FontAwesome.PLUS);
 		addDevice.setIcon(FontAwesome.PLUS);
-		showGyro.setIcon(FontAwesome.PLUS);
-		showCamera.setIcon(FontAwesome.PLUS);
+//		showGyro.setIcon(FontAwesome.PLUS);
+//		showCamera.setIcon(FontAwesome.PLUS);
 		menu = new HorizontalLayout(load, addGpio, addDevice, showGyro, showCamera);
 		menu.setSpacing(true);
 

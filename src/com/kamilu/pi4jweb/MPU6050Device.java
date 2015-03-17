@@ -44,12 +44,13 @@ public class MPU6050Device implements Serializable {
 		}
 	}
 
+	// TODO pêtla czêœciej dla dok³adnych obliczeñ, update UI rzadziej?
 	class SensorsThread extends Thread {
 		@Override
 		public void run() {
 			while (reading) {
 				try {
-					Thread.sleep(300);
+					Thread.sleep(500);
 					UI.getCurrent().access(new Runnable() {
 						@Override
 						public void run() {
@@ -169,7 +170,6 @@ public class MPU6050Device implements Serializable {
 					});
 				}
 			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
 		}
 	}

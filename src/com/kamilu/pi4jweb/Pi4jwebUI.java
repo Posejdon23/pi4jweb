@@ -28,15 +28,18 @@ public class Pi4jwebUI extends UI {
 	@VaadinServletConfiguration(widgetset = "com.kamilu.pi4jweb.widgetset.Pi4jwebWidgetset", productionMode = false, ui = Pi4jwebUI.class)
 	public static class Servlet extends VaadinServlet {
 	}
-	
-	static {
-		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-	}
 
+	static {
+		try {
+			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+		} catch (UnsatisfiedLinkError e) {
+		}
+	}
 	private VerticalLayout main;
 
 	@Override
 	protected void init(VaadinRequest request) {
+
 		final PiController controller = new PiController();
 		Label header = new Label("Log to your Pi");
 		TextField username = new TextField("Username", "pi");

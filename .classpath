@@ -10,7 +10,6 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=Pi4JWeb&amp;ivyXmlPath=ivy.xml&amp;confs=widgetset-compile&amp;ivySettingsPath=%24%7Bworkspace_loc%3APi4JWeb%2Fivysettings.xml%7D&amp;loadSettingsOnDemand=false&amp;ivyUserDir=&amp;propertyFiles="/>
 	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=Pi4JWeb&amp;ivyXmlPath=ivy.xml&amp;confs=nodeploy&amp;ivySettingsPath=%24%7Bworkspace_loc%3APi4JWeb%2Fivysettings.xml%7D&amp;loadSettingsOnDemand=false&amp;ivyUserDir=&amp;propertyFiles="/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/pi4j"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.0 (2)">
 		<attributes>
 			<attribute name="owner.project.facets" value="jst.web"/>
@@ -22,5 +21,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/opencv3"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/pi4j1.1"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
